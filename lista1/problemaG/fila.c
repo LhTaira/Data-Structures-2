@@ -18,18 +18,21 @@ Stack * createStack(char * n) {
 }
 
 
-Stack * push(Stack * stack, char * value) {
+Stack * push(Stack * stack, char * value, Stack ** end) {
     Stack * aux = stack;
     if(stack == NULL) {
         stack = createStack(value);
+        (*end) = stack;
+
         return stack;
     }
 
-    while(stack->next != NULL) {
-        stack = stack->next;
-    }
+    // while(stack->next != NULL) {
+    //     stack = stack->next;
+    // }
 
-    stack->next = createStack(value);
+    (*end)->next = createStack(value);
+    (*end) = (*end) -> next;
     return aux;
 }
 
@@ -41,16 +44,17 @@ Stack * pop(Stack * stack) {
     return(stack);
 }
 
-void toFinalDaFila(Stack * stack) {
-    Stack * aux = stack;
+void toFinalDaFila(Stack * stack, Stack ** aux) {
+    // Stack * aux = end;
 
-    while(aux->next != NULL) {
-        aux = aux->next;
-    }
+    // while(aux->next != NULL) {
+    //     aux = aux->next;
+    // }
 
-    aux->next = stack->next;
+    (*aux)->next = stack->next;
     stack->next = stack->next->next;
-    aux->next->next = NULL;
+    (*aux)->next->next = NULL;
+    (*aux) = (*aux)->next;
 }
 
 char getLastChar(char * string) {
@@ -70,24 +74,15 @@ char getFirstChar(char * string) {
 int main() {
     Stack * stack = NULL;
     Stack * aux;
+
+    Stack ** end;
+    end = (Stack **) malloc(sizeof(Stack**));
+    (* end) = (Stack *) malloc(sizeof(Stack*));
     char name[26];
 
     while(scanf("%s", name) == 1) {
-        stack = push(stack, name);
+        stack = push(stack, name, end);
     }
-
-    // while(1) {
-    //     int i = 0;
-    //     while(scanf("%c", &name[i++]) == 1 && name[i-1] != '\0' && name[i-1] != -1) {
-    //     }
-    //     stack = push(stack, name);
-
-    //     if(name[i-1] != -1) {
-    //         printf("shit\n");
-    //         break;
-    //     }
-    // }
-    
 
     aux = stack;
     
@@ -95,7 +90,7 @@ int main() {
         if(getFirstChar(stack->next->value) == getLastChar(stack->value) ||
          getFirstChar(stack->next->value) == getLastChar(stack->value)-32 ||
           getFirstChar(stack->next->value) == getLastChar(stack->value)+32) {
-            toFinalDaFila(stack);
+            toFinalDaFila(stack, end);
         }
 
         stack = stack->next;
