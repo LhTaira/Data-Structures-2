@@ -7,10 +7,10 @@ typedef struct Pilha {
     struct Pilha * prev;
 } Pilha;
 
-typedef struct PilhaString {
-    char * n;
-    struct PilhaString * prev;
-} PilhaString;
+typedef struct Stack{
+    char * value;
+    struct Stack * next;
+} Stack;
 
 Pilha * append(Pilha * pilha, int elemento) {
     Pilha * no;
@@ -34,45 +34,70 @@ Pilha * createPilha(Pilha * pilha) {
     return pilha;
 }
 
-PilhaString * appendString(PilhaString * pilha, char * elemento) {
-    PilhaString * no;
-    no = (PilhaString *) malloc(sizeof(PilhaString));
 
-    no->n = (char *) malloc(4*sizeof(char));
-    strcpy(no->n, elemento);
-    no->prev = pilha;
-    return no;
+Stack * createStack(char * n) {
+    Stack * stack = (Stack *) malloc(sizeof(Stack));
+    stack->value = (char *) malloc(4*sizeof(char));
+    stack->next = NULL;
+    strcpy(stack->value, n);
+
+    return stack;
 }
 
-PilhaString * createPilhaString(PilhaString * pilha) {
-    pilha = (PilhaString *) malloc(sizeof(PilhaString));
-    pilha->prev = NULL;
-    pilha->n = (char *) malloc(4*sizeof(char));
-    return pilha;
-}
 
-PilhaString * popString(PilhaString * pilha) {
-    PilhaString * aux = pilha->prev;
-    free(pilha->n);
-    free(pilha);
+Stack * push(Stack * stack, char * value, Stack ** end) {
+    Stack * aux = stack;
+    if(stack == NULL) {
+        stack = createStack(value);
+        (*end) = stack;
+
+        return stack;
+    }
+
+    // while(stack->next != NULL) {
+    //     stack = stack->next;
+    // }
+
+    (*end)->next = createStack(value);
+    (*end) = (*end) -> next;
     return aux;
+}
+
+Stack * popStack(Stack * stack) {
+    Stack * aux = stack;
+
+    aux = aux->next;
+    free(stack);
+    return(aux);
 }
 
 int main() {
     Pilha * pilha = NULL;
-    PilhaString * response = NULL;
-    pilha = createPilha(pilha);
+
+    Stack * response = NULL;
+
+    Stack ** end;
+
+    char no[3] = "no\0";
+    char yes[4] = "yes\0";
 
     int numberOfTrucks;
+    int not = 0;
+
     int * trucks;
     int * final;
 
+    end = (Stack **) malloc(sizeof(Stack**));
+    (* end) = (Stack *) malloc(sizeof(Stack*));
+
     while(scanf("%d", &numberOfTrucks) == 1 && numberOfTrucks != 0) {
+
 
         int j = 0;
         int k = 0;
         int expectedTruck = 1;
 
+        pilha = createPilha(pilha);
         trucks = (int *) malloc((numberOfTrucks+1)*sizeof(int));
         final = (int *) malloc(numberOfTrucks*sizeof(int));
 
@@ -98,13 +123,16 @@ int main() {
                 pilha = append(pilha, trucks[j]);
                 j++;
             } else {
-                appendString(response, "no\0");
-                // printf("no\n");
-                // return 0;
+                response = push(response, no, end);
+                not = 1;
+                break;
             }
         }
-
-        appendString(response, "yes\0");
+        if(not != 1) {
+            response = push(response, yes, end);
+        }
+        
+        not = 0;
 
         while(pilha->prev != NULL) {
             pilha = pop(pilha);
@@ -112,15 +140,17 @@ int main() {
 
         pilha = pop(pilha);
 
+        free(pilha);
         free(trucks);
         free(final);
         }
 
-    // while(response->prev != NULL) {
-    //     printf("%s\n", response->n);
-    //     response = popString(response);
-    // }
-    printf("%s\n", response->n);
+    while(response->next != NULL) {
+        printf("%s\n", response->value);
+        response = popStack(response);
+    }
+        printf("%s\n", response->value);
+
     
 
     return 0;
