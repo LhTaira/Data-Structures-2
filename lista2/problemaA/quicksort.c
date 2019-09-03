@@ -37,7 +37,7 @@ void quicksort(int * v, int l, int r){
 
 int main() {
 
-    int v[5000], i = 0;
+    int v[100000], i = 0;
 
     while(scanf("%d", &v[i]) == 1) {
         i++;
