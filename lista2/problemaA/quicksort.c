@@ -25,12 +25,14 @@ static int separa(int * v, int l, int r){
 
 void quicksort(int * v, int l, int r){
   int j;
-  if( l < r){
+  while(l < r){
     j = separa(v,l,r);
      quicksort(v,l,j-1);
-     quicksort(v,j+1,r);
+     p = j+ 1;
   } else {
-    return;
+     quicksort(v,j+1,r);
+    // return;
+    r = j - 1;
   }
   
 }
