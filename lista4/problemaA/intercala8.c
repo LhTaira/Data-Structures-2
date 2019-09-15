@@ -108,12 +108,12 @@ int main() {
     //     mergeSort(v[i] , 0, s[i] - 1);
     // }
 
-    vFinal = intercala8(v[1], s[1], v[2], s[2], v[3], s[3], v[4], s[4], v[5], s[5], v[6], s[6], v[7], s[7], v[8], s[8]);
+    vFinal = intercala8(v[0], s[0], v[1], s[1], v[2], s[2], v[3], s[3], v[4], s[4], v[5], s[5], v[6], s[6], v[7], s[7]);
 
     // mergeSort(vFinal, 0, s[1] + s[2] + s[3] + s[4] + s[5] + s[6] + s[7] + s[8]);
 
     printf("%d", vFinal[0]);
-    for(int i = 1; i < s[1] + s[2] + s[3] + s[4] + s[5] + s[6] + s[7] + s[8]; i++) {
+    for(int i = 1; i < s[1] + s[2] + s[3] + s[4] + s[5] + s[6] + s[7] + s[0]; i++) {
         printf(" %d", vFinal[i]);
     }
     printf("\n");
