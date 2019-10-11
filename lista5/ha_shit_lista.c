@@ -82,8 +82,6 @@ int main() {
 
     int nCasos, nOperacoes, hashValue;
 
-
-
     scanf("%d", &nCasos);
 
     for(int i = 0; i < nCasos; i++) {
