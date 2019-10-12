@@ -20,8 +20,8 @@ typedef struct Tail {
 void pushBack(Head * head, Tail * tail, int isHeadOrTail, int value);
 void popBack(Head * head, Tail * tail, int isHeadOrTail);
 
-//isHeadOrTail == 0: head == head
-//isHeadOrTail == 1: head == tail
+//isHeadOrTail == 1: head == head
+//isHeadOrTail == -1: head == tail
 
 void createList(Head * head, Tail * tail) {
     head->tail = tail;
@@ -178,6 +178,6 @@ int main() {
                 break;
         }
     }
-    
+
     return 0;
 }
