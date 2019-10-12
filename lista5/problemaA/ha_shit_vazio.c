@@ -3,6 +3,7 @@
 #include <string.h>
 
 typedef struct Item{
+    int hash;
     char exists;
     char string[15]; 
 } Item;
@@ -32,7 +33,8 @@ void addItem(Item * vetor, int hash, char * value, int * nItems) {
         }
     }
 
-    vetor[hash].exists =1;
+    vetor[hash].exists = 1;
+    vetor[hash].hash = hash;
     strcpy(vetor[hash].string, value);
     *nItems += 1;
 }
@@ -89,7 +91,7 @@ int main() {
 
         for(int k = 0; k < 101; k++) {
             if(vetor[k].exists == 1) {
-                printf("%d:%s\n", k, vetor[k].string);
+                printf("%d:%s\n", vetor[k].hash, vetor[k].string);
             }
         }
 
