@@ -5,7 +5,7 @@
 typedef struct Item{
     int hash;
     char exists;
-    char string[15]; 
+    char string[16]; 
 } Item;
 
 int h(char * string) {
@@ -22,37 +22,87 @@ int hash(char * string){
     return h(string)%101;
 }
 
+// void addItem(Item * vetor, int hash, char * value, int * nItems) {
+//     int index = hash, i = 0;
+
+//     while(vetor[index].exists == 1) {
+//         if(strcmp(vetor[index].string, value) == 0) {
+//             return;
+//         }
+//         i++;
+//         index = (hash+(i*i)+23*i) % 101;
+//         if(i == 20) {
+//             return;
+//         }
+//     }
+
+//     vetor[index].exists = 1;
+//     vetor[index].hash = hash;
+//     strcpy(vetor[index].string, value);
+//     *nItems += 1;
+// }
+
+// void removeItem(Item * vetor, int hash, char * value, int * nItems) {
+//     int index = hash, i =0;
+
+//     while(vetor[index].exists == 1) {
+//         if(strcmp(vetor[index].string, value) == 0) {
+//             vetor[index].exists = 0;
+//             *nItems -= 1;
+//             return;
+//         }
+//         i++;
+//         index = (hash+(i*i)+23*i) % 101;
+//         if(i == 20) {
+//             return;
+//         }
+//     }
+// }
+
 void addItem(Item * vetor, int hash, char * value, int * nItems) {
-    while(vetor[hash].exists == 1) {
-        if(strcmp(vetor[hash].string, value) == 0) {
-            return;
+    int index, emptyIndex = hash;
+
+    for(int i = 0; i < 20; i++) {
+        index = (hash+(i*i)+23*i) % 101;
+
+        if(vetor[emptyIndex].exists == 1) {
+            emptyIndex = index;
         }
-        hash++;
-        if(hash > 101) {
-            return;
+        
+        if(vetor[index].exists == 1) {
+            if(!strcmp(vetor[index].string, value)) {
+                return;
+            }
         }
+
     }
 
-    vetor[hash].exists = 1;
-    vetor[hash].hash = hash;
-    strcpy(vetor[hash].string, value);
+    if(vetor[emptyIndex].exists == 1) {
+        return;
+    }
+
     *nItems += 1;
+    strcpy(vetor[emptyIndex].string, value);
+    vetor[emptyIndex].exists = 1;
+    vetor[emptyIndex].hash = hash;
+
 }
 
 void removeItem(Item * vetor, int hash, char * value, int * nItems) {
-    while(vetor[hash].exists == 1) {
-        if(strcmp(vetor[hash].string, value) == 0) {
-            vetor[hash].exists = 0;
-            *nItems -= 1;
-            return;
-        }
-        hash++;
-        if(hash > 101) {
-            return;
+    int index;
+
+    for(int i = 0; i < 20; i++) {
+        index = (hash+(i*i)+23*i) % 101;
+
+        if(vetor[index].exists == 1) {
+            if(!strcmp(vetor[index].string, value)) {
+                *nItems -= 1;
+                vetor[index].exists = 0;
+                return;
+            }
         }
     }
 }
-
 
 int main() {
     char stringAux[19];
@@ -91,7 +141,7 @@ int main() {
 
         for(int k = 0; k < 101; k++) {
             if(vetor[k].exists == 1) {
-                printf("%d:%s\n", vetor[k].hash, vetor[k].string);
+                printf("%d:%s\n", k, vetor[k].string);
             }
         }
 
