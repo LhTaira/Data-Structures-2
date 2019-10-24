@@ -3,16 +3,28 @@
 
 typedef struct Node {
     int value;
+    int id;
+    int nNos;
     struct Node * l;
     struct Node * r;
 } Node;
 
-Node * createTree(int value) {
+int updateNos(Node * tree) {
+    if (tree == NULL) {
+        return 0;
+    }
+
+    tree->nNos =  1 + updateNos(tree->l) + updateNos(tree->r);
+    return tree->nNos;
+}
+
+Node * createTree(int value, int id) {
     Node * tree = malloc(sizeof(Node));
 
     tree->l = NULL;
     tree->r = NULL;
     tree->value = value;
+    tree->id = id;
 
     return tree;
 }
@@ -31,9 +43,9 @@ Node * rotateRight(Node * grandParent) {
 	return temp;
 }
 
-Node * partR(Node * node, int k) {
+Node * partR(Node * h, int k) {
 
-    int t = (h->l == NULL) ? 0: h->l->value;
+    int t = (h->l == NULL) ? 0: h->l->nNos;
 
     if(t > k) {
         h->l = partR(h->l, k);
@@ -48,12 +60,12 @@ Node * partR(Node * node, int k) {
     return h;
 }
 
-Node * balance(Node * tree) {
-    if(h->value < 2) {
+Node * balance(Node * h) {
+    if(h->nNos <= 2) {
         return h;
     }
 
-    h = partR(h, h->n/2);
+    h = partR(h, h->nNos/2);
     h->l = balance(h->l);
     h->r = balance(h->r);
     return h;
@@ -64,10 +76,10 @@ int * selectR(Node * h, int k) {
         return NULL;
     }
 
-    int t = (h->l == NULL) ? 0: h->l->value;
+    int t = (h->l == NULL) ? 0: h->l->nNos;
 
     if(t > k) {
-        return selectR(h-l, k);
+        return selectR(h->l, k);
     }
 
     if(t < k) {
@@ -78,16 +90,23 @@ int * selectR(Node * h, int k) {
     return temp;
 }
 
-Node * addNode(Node * tree, int value) {
+Node * addNode(Node * tree, int value, int id) {
     if(tree == NULL) {
-        return createTree(value);
+        return createTree(value, id);
     }
 
     Node * newNode = malloc(sizeof(Node));
     
     newNode->value = value;
+    newNode->id = id;
 
     if(tree->value < value) {
+        newNode->l = tree;
+        newNode->r = NULL;
+    } else if(tree->value == value) {
+        newNode->l = NULL;
+        newNode->r = tree;
+    } else if(tree->id < id) {
         newNode->l = tree;
         newNode->r = NULL;
     } else {
@@ -95,10 +114,13 @@ Node * addNode(Node * tree, int value) {
         newNode->r = tree;
     }
 
-    return balance(tree);
+    // updateNos(tree);
+    // return balance(tree);
+
+    return tree;
 }
 
-Node * removeNode(Node * tree; int value) {
+Node * removeNode(Node * tree, int value) {
     if(tree == NULL) {
         return tree;
     }
@@ -119,8 +141,28 @@ Node * removeNode(Node * tree; int value) {
     }
 }
 
+
+void printInOrder(Node * tree) {
+    if(tree == NULL) {
+        return;
+    }
+
+    printInOrder(tree->l);
+    printf("%d\n", tree->value);
+    printInOrder(tree->r);
+}
+
 int main() {
     Node * tree = NULL;
+    int imgay, imnotgay;
 
+    while(scanf("%d %d", &imgay, &imnotgay) == 2) {
+        tree = addNode(tree, imgay, imnotgay);
+    }
 
+    updateNos(tree);
+
+    printInOrder(tree);
+
+    return 0;
 }
