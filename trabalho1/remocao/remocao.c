@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Pointer{
+typedef struct Pointer {
     unsigned long this;
     unsigned long next;
     unsigned long prev;
@@ -70,13 +70,18 @@ Pointer * binarySearch(Pointer * vetor, long unsigned key, int l, int r) {
 int main() {
 
     Pointer pointers[250000];
+    Pointer ** zeros = malloc(250000 * sizeof(Pointer *));
     Pointer * ptr1 = malloc(sizeof(Pointer));
+    Pointer * prePtr1 = malloc(sizeof(Pointer));
     Pointer * ptr2 = malloc(sizeof(Pointer));
     Pointer * presente = malloc(sizeof(Pointer));
     Pointer * proximo = malloc(sizeof(Pointer));
+    Pointer * aux;
     
+    unsigned long zerosNumbers[250000];
     unsigned long auxInt[3];
-    int i = 0, j = 0, k = 0;
+
+    int i = 0, j = 0, z = 0;
 
     while(scanf("%lx %lx %lx", &auxInt[0], &auxInt[1], &auxInt[2]) == 3) {
         pointers[i].this = auxInt[0];
@@ -86,63 +91,54 @@ int main() {
 
     *ptr1 = pointers[0];
     *ptr2 = pointers[1];
-    // *presente = *ptr1;
-    // *proximo = *ptr1;
 
     mergeSort(pointers, 0, i - 1);
 
-    presente = &pointers[0];
-
-    while(presente->this != ptr1->this) {
-        presente = binarySearch(&pointers[0], presente->next, 0, i - 1);
-    }
-    
+    presente = binarySearch(&pointers[0], ptr1->prev, 0, i - 1);
+    *prePtr1 = *presente;
     proximo = binarySearch(pointers, presente->next, 0, i - 1);
 
-    while(proximo->this != ptr2->this) {
-        k++;
-        proximo->this = 0;
+    do {
+        zeros[z++] = proximo;
        
+        proximo = binarySearch(pointers, proximo->next, 0, i - 1);
 
-        proximo = binarySearch(pointers, proximo->next, k, i - 1);
-
-        presente->next = proximo->next;
+        presente->next = proximo->this;
         proximo->prev = presente->this;
 
+    } while(proximo->this != ptr2->next);
+
+    for(int c = z; c > 0; c--) {
+        zerosNumbers[c] = (*zeros)->this;
+        (*zeros++)->this = 0;
     }
-    
-    mergeSort(pointers, 0, i - 1);
-    
-    presente->this = 0;
-
-    presente = binarySearch(pointers, presente->prev, 0, i - 1);
-
-    printf("myass\n");
-    presente->next = proximo->this;
-    proximo->prev = presente->this;
 
     mergeSort(pointers, 0, i - 1);
 
-    proximo->this = 0;
 
-    proximo = binarySearch(pointers, proximo->next, 0, i - 1);
-    
-    proximo->prev = presente->this;
-    presente->next = proximo->this;
-
-    mergeSort(pointers, 0, i - 1);
+    presente = binarySearch(pointers, prePtr1->this, 0, i - 1);
 
     while(presente->prev != 0) {
-        presente = binarySearch(pointers, presente->prev, 0, i - 1);
+       aux = binarySearch(pointers, presente->prev, 0, i - 1);
+       if(aux != NULL) {
+           presente = aux;
+       } else {
+           break;
+       }
     }
-    printf("%lx %lx %lx\n", presente->this, presente->prev, presente->next);
-    
-    while(presente->next != 0) {
-        presente = binarySearch(pointers, presente->next, 0, i - 1);
+
+
+
+    do {
         printf("%lx %lx %lx\n", presente->this, presente->prev, presente->next);
+        presente = binarySearch(pointers, presente->next, 0, i - 1);
+    } while(presente);
+
+    printf("\n");
+
+    for(int c = z; c > 0; c--) {
+        printf("%lx\n", zerosNumbers[c]);
     }
-
-
 
     return 0;
 }
