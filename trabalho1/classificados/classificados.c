@@ -4,7 +4,7 @@
 #define exchange(a, b) {Semente d = a; a = b; b = d;}
 
 typedef struct Semente {
-    unsigned int id;
+    int id;
     int nota;
 } Semente;
 
@@ -102,23 +102,25 @@ void encontraEColoca(Semente * v, int l, int r, int target) {
 }
 
 int main() {
-    Semente sementes[1000000];
-    int k, size = 0;
+    Semente * sementes = malloc(10000000 * sizeof(Semente));
+    int k, size = 0, aux1, aux2;
 
     scanf("%d", &k);
 
-    while(scanf("%u %d", &sementes[size].id, &sementes[size].nota) == 2) {
+    while(scanf("%d %d", &aux1, &aux2) == 2) {
+        sementes[size].id = aux1;
+        sementes[size].nota = aux2;
         size++;
     }
 
-    for(int i = 0; i < k; i++) {
-        encontraEColoca(sementes, 0, size - 1, i);
-    }
+    // for(int i = 0; i < k; i++) {
+        encontraEColoca(sementes, 0, size - 1, k - 1);
+    // } 
 
     mergeSort(sementes, 0, k - 1);
 
     for(int i = 0; i < k; i++) {
-        printf("%u %d\n", sementes[i].id, sementes[i].nota);
+        printf("%d %d\n", sementes[i].id, sementes[i].nota);
     }
 
     return 0;
