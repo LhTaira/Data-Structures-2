@@ -107,8 +107,7 @@ int getItem(Graph graph, int index) {
 }
 
 void dfsR(Graph * graph, int source, int destination, int * pre, int * counter, int nVertices) {
-    pre[source] = (*counter)++;    
-
+    pre[source] = (*counter)++;
     for(int t = 0; t < nVertices; t++) {
         if(getItem(graph[source], t) != -1) {
             if(pre[t] == -1) {
@@ -155,11 +154,12 @@ int main() {
                 dfsR(graph, i, j, pre, counter, nNomes);
             }
             for(int j = 0; j < nNomes; j++) {
-                if(pre[j] > maior) {
+                printf("%d ", pre[j]);
+                if(pre[j] > maior && j != i) {
                     maior = pre[j];
                 }
-            // printf("gay\n");
             }
+            printf("\n");
         }
 
         printf("%d\n", maior + 1);
