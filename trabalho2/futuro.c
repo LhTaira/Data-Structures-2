@@ -5,7 +5,7 @@
 #define bool char
 #define true 1
 #define false 0
-#define INFINITY MAX_INT
+#define INFINITY 9999
 
 typedef struct Graph {
     int nVerticves;
@@ -16,54 +16,11 @@ void link(Graph * graph, int source, int destination, int type, int cost) {
     graph->matrix[source][destination] = cost;
     
     if(type == 2) {
-        link(graph, destination, source, 1);
+        link(graph, destination, source, 1, cost);
     }
 }
 
-void dijkstra(Graph * graph, int source, int * pais, int * distancia) {
-    bool tree[1000];
-    for (int v = 0; v < graph->nVerticves; ++v) {
-        pais[v] = -1;
-        tree[v] = false;
-        distancia[v] = INFINITY;
-    }
 
-    pais[source] = source;
-    tree[source] = true;
-    distancia[source] = 0;
-
-    for (link a = graph->adj[source]; a != NULL; a = a->next) {        
-        pais[a->w] = source;
-        distancia[a->w] = a->c;
-    }
-
-    while (true) {
-        int min = INFINITY;
-        int y;
-        for (int z = 0; z < graph->nVerticves; ++z) {
-            if (!tree[z]) {
-            continue;
-            }
-            if (distancia[z] < min) {
-            min = distancia[z], y = z;
-            }
-        }
-        if (min == INFINITY) {
-            break;
-        }
-        tree[y] = true;
-        
-        for (link a = graph->adj[y]; a != NULL; a = a->next) {
-            if (tree[a->w]) {
-                continue;
-            }
-            if (distancia[y] + a->c < distancia[a->w]) {
-                distancia[a->w] = distancia[y] + a->c;
-                pais[a->w] = y;
-            }
-        }
-    }
-}
 
 int main() {
     Graph * graph = malloc(sizeof(Graph));

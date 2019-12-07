@@ -2,14 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define vertex int
-
-// typedef struct node *link;
-// struct node { 
-//    vertex w; 
-//    link next; 
-// };
-
 typedef struct List {
     struct List * next;
     int number;
@@ -17,26 +9,15 @@ typedef struct List {
 
 typedef struct Graph {
     List * list;
-    List * heapEnd;
+    List * listEnd;
     char name[31];
 } Graph;
-
-// typedef struct Edge {
-//     int n1, n2;
-// } Edge;
-
-// Edge EDGE(int a, int b) {
-//     Edge c;
-//     c.n1 = a;
-//     c.n2 = b;
-//     return c;
-// }
 
 void createHeap(Graph * graph, int number) {
     graph->list = malloc(sizeof(List));
     graph->list->next = NULL;
     graph->list->number = number;
-    graph->heapEnd = graph->list;
+    graph->listEnd = graph->list;
 }
 
 void push(Graph * graph, int number) {
@@ -50,8 +31,8 @@ void push(Graph * graph, int number) {
     newNode->next = NULL;
     newNode->number = number;
 
-    graph->heapEnd->next = newNode;
-    graph->heapEnd = newNode;
+    graph->listEnd->next = newNode;
+    graph->listEnd = newNode;
 } 
 
 void makeLink(Graph * graph, char * predador, char * presa) {
@@ -118,7 +99,7 @@ void dfsR(Graph * graph, int source, int destination, int * pre, int * counter, 
 }
 
 int main() {
-    int * pre, * counter = malloc(sizeof(int)), maior;
+    int * pre, * counter = malloc(sizeof(int)), maior, countSize, ** preMatrix;
 
     Graph * graph;
     int nNomes, nCadeias;
@@ -126,15 +107,20 @@ int main() {
 
     scanf("%d %d", &nNomes, &nCadeias);
 
-    while(nNomes != 0 && nCadeias != 0) {
+    while(nNomes != 0) {
         
         pre = malloc(nNomes * sizeof(int));
-        graph = malloc(nNomes * sizeof(Graph));
-        maior = -1;
+        preMatrix = malloc(nNomes * sizeof(int *));
+        graph = malloc(nNomes * sizeof(Graph));        
 
         for(int i = 0; i < nNomes; i++) {
+            preMatrix[i] = malloc(nNomes * sizeof(int));
             graph[i].list == NULL;
         }
+
+        // for(int i = 0; i < nNomes; i++) {
+        // }
+
 
         for(int i = 0; i < nNomes; i++) {
             scanf("%s", graph[i].name);
@@ -147,25 +133,45 @@ int main() {
 
         for(int i = 0; i < nNomes; i++) {
             for(int j = 0; j < nNomes; j++) {
-                pre[j] = -1;
+                preMatrix[i][j] = -1;
             }
             for(int j = 0; j < nNomes; j++) {
                 *counter = 0;
-                dfsR(graph, i, j, pre, counter, nNomes);
+                dfsR(graph, i, j, preMatrix[i], counter, nNomes);
+                // preMatrix[i][j] = pre[j];
             }
-            for(int j = 0; j < nNomes; j++) {
-                printf("%d ", pre[j]);
-                if(pre[j] > maior && j != i) {
-                    maior = pre[j];
-                }
-            }
-            printf("\n");
+            // for(int j = 0; j < nNomes; j++) {
+            //     printf("%d ", pre[j]);
+            //     if(pre[j] > maior && j != i) {
+            //         maior = pre[j];
+            //     }
+            // }
+
+            // for(int j = 0; j < nNomes; j++) {
+            // }
+            // printf("\n");
         }
 
-        printf("%d\n", maior + 1);
+        maior = 0;
+        for(int i = 0; i < nNomes; i++) {
+            countSize = 0;
+            for(int j = 0; j < nNomes; j++) {
+                // printf("%d\t", preMatrix[i][j]);
+                if(preMatrix[j][i] != -1) {
+                    countSize++;
+                }
+            }
+            if(countSize > maior) {
+                maior = countSize;
+            }
+            // printf("\n");
+        }
+        // printf("\n");
+
+        printf("%d\n", maior);
 
         // freeEverything(graph, nNomes);
-        free(pre);
+        // free(pre);
         // scanf("%c");
         scanf("%d %d", &nNomes, &nCadeias);
     }
